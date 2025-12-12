@@ -1,0 +1,42 @@
+<!doctype html>
+
+<html lang="fr">  
+<head>  
+<meta charset="utf-8">  
+<meta name="viewport" content="width=device-width,initial-scale=1">  
+<title>Au Bien Ficelé</title>  
+<style>  
+:root{--bg:#fbfbfb;--card:#ffffff;--primary:#0b5fff;--text:#111;--muted:#556}  
+*{box-sizing:border-box}  
+html,body{height:100%}  
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}  
+.container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}  
+.card{width:100%;max-width:540px;background:var(--card);border-radius:12px;padding:20px;border:1px solid rgba(0,0,0,0.04)}  
+h1{margin:0 0 16px;font-size:1.5rem;text-align:center}  
+.actions{display:grid;gap:12px}  
+a.button{display:inline-flex;align-items:center;justify-content:center;padding:14px 16px;background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:10px;text-decoration:none;color:var(--text);font-weight:600}  
+a.button.primary{background:linear-gradient(180deg,var(--primary) 0%,#084fd6 100%);color:#fff;border:none}  
+.info{margin-top:16px;padding:12px;border-radius:8px;background:#f6f8fb;color:var(--muted);font-size:0.95rem;line-height:1.4}  
+@media(min-width:520px){h1{font-size:1.75rem}}  
+</style>  
+</head>  
+<body>  
+<div class="container">  
+  <main class="card" role="main">  
+    <h1>Au Bien Ficelé</h1>  
+    <div class="actions">  
+      <a class="button primary" href="tel:+33XXXXXXXXX">Appeler</a>  
+      <a class="button" href="https://www.google.com/maps/search/?api=1&query=30+rue+Bersot+25000+Besan%C3%A7on" target="_blank" rel="noopener">Itinéraire</a>  
+      <a class="button" href="#" rel="noopener">Laisser un avis sur Google</a>  
+    </div>  
+    <div class="info" aria-label="Ajouter à l'écran d'accueil">  
+      <strong>Ajouter à l’écran d’accueil</strong>  
+      <p style="margin:8px 0 0">  
+        iPhone : Partager → Sur l’écran d’accueil<br>  
+        Android : Menu ⋮ → Ajouter à l’écran d’accueil  
+      </p>  
+    </div>  
+  </main>  
+</div>  
+</body>  
+</html>
