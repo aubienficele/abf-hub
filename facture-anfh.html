@@ -1,0 +1,349 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Facture ANFH (mobile) – Gmail</title>
+  <style>
+    :root {
+      --bg:#f4f5f7; --card:#fff; --text:#111; --muted:#555;
+      --line:#d0d4da; --warnbg:#fff1f1; --warn:#b00000;
+      --btn:#0b5fff; --btnText:#fff; --btnDisabled:#9aa7bf;
+      --shadow:0 6px 18px rgba(0,0,0,.08);
+      --radius:14px;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width:980px; margin:0 auto; padding:14px 12px 40px; }
+    .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px; }
+    h1 { font-size:18px; margin:0 0 10px 0; }
+    .sub { font-size:12px; color:var(--muted); margin:0 0 14px 0; }
+    .grid { display:grid; gap:10px; grid-template-columns: 1fr; }
+    @media (min-width: 820px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+      .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+      .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    }
+    label { display:block; font-size:12px; color:var(--muted); margin:4px 0 4px; }
+    input, textarea { width:100%; padding:10px 10px; border:1px solid var(--line); border-radius:12px; font-size:14px; background:#fff; }
+    textarea { min-height:72px; resize:vertical; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+    .btnbar { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .btn {
+      appearance:none; border:0; border-radius:12px; padding:12px 14px;
+      font-size:14px; font-weight:700; text-decoration:none; text-align:center;
+      display:inline-block;
+    }
+    .btn-primary { background:var(--btn); color:var(--btnText); }
+    .btn-secondary { background:#eef2ff; color:#1b2a4a; border:1px solid #d6dcff; }
+    .btn[aria-disabled="true"] { background:var(--btnDisabled); color:#f6f7fb; pointer-events:none; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; background:#eef1f5; color:#223; }
+    .warnbox { border:1px solid #e0a1a1; background:var(--warnbg); border-radius:14px; padding:12px; margin-top:12px; }
+    .warnbox strong { color:var(--warn); }
+    .check { display:flex; gap:10px; align-items:flex-start; margin-top:10px; }
+    .check input { width:auto; transform:scale(1.25); margin-top:2px; }
+    .mono { white-space:pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace; font-size:12.5px; background:#fbfbfd; border:1px solid #e3e6ee; border-radius:14px; padding:12px; margin-top:12px; }
+    table { width:100%; border-collapse:separate; border-spacing:0; margin-top:10px; overflow:hidden; border-radius:14px; border:1px solid var(--line); }
+    th, td { padding:10px; border-bottom:1px solid var(--line); font-size:13px; }
+    th { text-align:left; background:#f7f8fb; color:#223; }
+    tr:last-child td { border-bottom:0; }
+    td.r { text-align:right; white-space:nowrap; }
+    .small { font-size:12px; color:var(--muted); }
+    .footer { margin-top:12px; font-size:12px; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Facture ANFH – Envoi Gmail (mobile)</h1>
+      <p class="sub">Objectif : remplir depuis ton téléphone et ouvrir Gmail avec la facture dans le corps du mail. Vérification « annule et remplace » + numérotation automatique.</p>
+
+      <div class="grid grid-2">
+        <div>
+          <label>Destinataires</label>
+          <input id="to" value="s.montel@anfh.fr,renan.fernandez@caugerec.fr" />
+        </div>
+        <div>
+          <label>Objet du mail (auto si vide)</label>
+          <input id="mail_subject" placeholder="(optionnel)" />
+        </div>
+      </div>
+
+      <div class="grid grid-4" style="margin-top:6px;">
+        <div>
+          <label>Date de prestation</label>
+          <input id="date_presta" type="date" value="2025-10-14" />
+        </div>
+        <div>
+          <label>Nombre de personnes</label>
+          <input id="nb_pers" type="number" step="1" value="7" />
+        </div>
+        <div>
+          <label>Prix unitaire TTC</label>
+          <input id="pu_ttc" type="number" step="0.01" value="20.00" />
+        </div>
+        <div>
+          <label>TVA %</label>
+          <input id="tva" type="number" step="0.01" value="10" />
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:6px;">
+        <div>
+          <label>N° de facture (auto)</label>
+          <input id="num_facture" value="" />
+          <div class="small">Règle : si la date existe → même numéro (annule/remplace). Sinon → prochain numéro libre.</div>
+        </div>
+        <div>
+          <label>Description</label>
+          <input id="desc" value="Repas ANFH – prestation de restauration" />
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:6px;">
+        <div>
+          <label>Client</label>
+          <input id="client_nom" value="ANFH" />
+        </div>
+        <div>
+          <label>Date d’édition</label>
+          <input id="date_edition" value="17/12/2025" />
+        </div>
+      </div>
+
+      <label>Adresse client</label>
+      <textarea id="client_adresse">ANFH
+9 rue Jean-Baptiste Proudhon
+25000 Besançon</textarea>
+
+      <table aria-label="Récapitulatif">
+        <thead>
+          <tr>
+            <th>Récapitulatif</th>
+            <th class="r">Valeur</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Total TTC</td><td class="r" id="total_ttc">0,00 €</td></tr>
+        </tbody>
+      </table>
+
+      <div id="verif" class="warnbox" style="display:none;">
+        <strong>Vérification : une facture existe déjà à cette date.</strong>
+        <div id="verif_msg" class="small" style="margin-top:6px;"></div>
+        <div class="check">
+          <input id="chk_confirm" type="checkbox" />
+          <div>
+            <div><strong>Confirmer « annule et remplace »</strong> pour activer le bouton Gmail.</div>
+            <div class="small">Le mail contiendra automatiquement la mention « Annule et remplace la facture … ».</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btnbar">
+        <a id="btn_gmail" class="btn btn-primary" href="#" target="_blank" aria-disabled="true">Ouvrir Gmail avec la facture</a>
+        <a class="btn btn-secondary" href="#" onclick="window.print(); return false;">Imprimer</a>
+        <span class="pill" id="status_pill">Vérification…</span>
+      </div>
+
+      <div class="mono" id="apercu"></div>
+
+      <div class="footer">
+        Conseil : ajoute cette page en favori Chrome (ou sur l’écran d’accueil) une fois publiée sur GitHub Pages.
+      </div>
+    </div>
+  </div>
+
+<script>
+/**
+ * HISTORIQUE – à maintenir dans ce bloc
+ *  - date : YYYY-MM-DD
+ *  - num  : ANFH-2025-XXX
+ *  - pers : nb personnes initialement facturé
+ *
+ * IMPORTANT : ce bloc sert uniquement à :
+ *  - détecter « annule et remplace »
+ *  - proposer les numéros
+ */
+const EXISTING = [
+  {date:"2025-10-07", num:"ANFH-2025-001", pers:13},
+  {date:"2025-10-14", num:"ANFH-2025-002", pers:13},
+  {date:"2025-10-15", num:"ANFH-2025-003", pers:11},
+  {date:"2025-11-05", num:"ANFH-2025-004", pers:9},
+  {date:"2025-11-07", num:"ANFH-2025-005", pers:9},
+  {date:"2025-11-13", num:"ANFH-2025-009", pers:14},
+  {date:"2025-11-19", num:"ANFH-2025-008", pers:11},
+  {date:"2025-12-09", num:"ANFH-2025-007", pers:13},
+  {date:"2025-12-10", num:"ANFH-2025-006", pers:9}
+];
+
+function pad3(n){ n=String(n); return (n.length>=3)?n:("000"+n).slice(-3); }
+function maxExistingNum() {
+  let max = 0;
+  for (const e of EXISTING) {
+    const m = /ANFH-2025-(\d{3})/.exec(e.num || "");
+    if (m) {
+      const v = parseInt(m[1], 10);
+      if (v > max) max = v;
+    }
+  }
+  return max;
+}
+function findByDate(d){ return EXISTING.find(x => x.date === d) || null; }
+function isoToFr(iso) {
+  if (!iso) return "";
+  const p = iso.split("-");
+  if (p.length !== 3) return iso;
+  return p[2] + "/" + p[1] + "/" + p[0];
+}
+function n2(x) {
+  const v = Number(x);
+  if (isNaN(v)) return "0,00";
+  return v.toFixed(2).replace(".", ",");
+}
+function setEnabled(enabled) {
+  const b = document.getElementById("btn_gmail");
+  b.setAttribute("aria-disabled", enabled ? "false" : "true");
+  if (!enabled) b.href = "#";
+}
+
+function updateNumero() {
+  const d = (document.getElementById("date_presta").value || "").trim();
+  const ex = findByDate(d);
+  const numInput = document.getElementById("num_facture");
+
+  if (ex) {
+    numInput.value = ex.num; // même numéro pour annule/remplace
+    return;
+  }
+  const next = maxExistingNum() + 1;
+  numInput.value = "ANFH-2025-" + pad3(next);
+}
+
+function buildApercu() {
+  const to = (document.getElementById("to").value || "").trim();
+  const d = (document.getElementById("date_presta").value || "").trim();
+  const dfr = isoToFr(d);
+  const nb = Number((document.getElementById("nb_pers").value || "0").replace(",", ".")) || 0;
+  const pu = Number((document.getElementById("pu_ttc").value || "0").replace(",", ".")) || 0;
+  const tva = Number((document.getElementById("tva").value || "0").replace(",", ".")) || 0;
+  const num = (document.getElementById("num_facture").value || "").trim();
+  const client = (document.getElementById("client_nom").value || "").trim();
+  const addr = (document.getElementById("client_adresse").value || "").trim();
+  const desc = (document.getElementById("desc").value || "").trim();
+  const dateEdition = (document.getElementById("date_edition").value || "").trim();
+
+  const totalTTC = nb * pu;
+  document.getElementById("total_ttc").textContent = n2(totalTTC) + " €";
+
+  const ex = findByDate(d);
+  const needReplace = ex && (Number(ex.pers) !== Number(nb));
+  const replaceBlock = needReplace
+    ? ("ANNULATION / REMPLACEMENT\n==========================\nAnnule et remplace la facture " + ex.num + " du " + isoToFr(ex.date) + " (" + ex.pers + " pers)\n\n")
+    : "";
+
+  // Déduction HT à partir TTC (utile au texte, sans tableau lourd)
+  const puHT = (tva > 0) ? (pu / (1 + tva/100)) : pu;
+  const totalHT = nb * puHT;
+  const totalTVA = totalTTC - totalHT;
+
+  const txt =
+"FACTURE\n=======\n" +
+"Numéro : " + num + "\n" +
+(d ? ("Date de prestation : " + d + " (" + dfr + ")\n\n") : "\n") +
+replaceBlock +
+"EMETTEUR\n========\n" +
+"AU BIEN FICELÉ - SAS YM RESTAURATION\n" +
+"30 Rue Bersot\n" +
+"25000 Besançon\n" +
+"SIREN : 919 216 028\n" +
+"Code NAF : 5610A\n" +
+"TVA intracom : FR79 919 216 028\n\n" +
+"CLIENT\n======\n" +
+client + "\n" + addr + "\n\n" +
+"DETAIL FACTURE\n==============\n" +
+"Description : " + desc + "\n" +
+"Nombre de convives : " + nb + "\n" +
+"PU TTC : " + n2(pu) + " €\n" +
+"TVA % : " + (isNaN(tva)? "": tva) + "\n" +
+"Total HT : " + n2(totalHT) + " €\n" +
+"TVA : " + n2(totalTVA) + " €\n" +
+"Total TTC : " + n2(totalTTC) + " €\n\n" +
+"COORDONNEES BANCAIRES\n======================\n" +
+"Banque Populaire Bourgogne Franche-Comté\n" +
+"Titulaire : SAS YM RESTAURATION\n" +
+"IBAN : FR76 1080 7000 3042 4219 4851 638\n" +
+"BIC  : CCBPFRPPDJN\n\n" +
+"Date d’édition : " + dateEdition + "\n";
+
+  document.getElementById("apercu").textContent = txt;
+  return { txt, needReplace, ex };
+}
+
+function updateVerif(needReplace, ex) {
+  const verif = document.getElementById("verif");
+  const msg = document.getElementById("verif_msg");
+  const chk = document.getElementById("chk_confirm");
+  const pill = document.getElementById("status_pill");
+
+  if (!ex || !needReplace) {
+    verif.style.display = "none";
+    chk.checked = false;
+    pill.textContent = "OK";
+    setEnabled(true);
+    return;
+  }
+
+  verif.style.display = "block";
+  msg.textContent = "Date " + isoToFr(ex.date) + " : déjà éditée en " + ex.pers + " pers (n° " + ex.num + "). Nouvelle saisie : " + document.getElementById("nb_pers").value + " pers.";
+  pill.textContent = "Confirmation requise";
+  setEnabled(chk.checked);
+}
+
+function updateGmailLink() {
+  const b = document.getElementById("btn_gmail");
+  const enabled = b.getAttribute("aria-disabled") === "false";
+  if (!enabled) return;
+
+  const to = (document.getElementById("to").value || "").trim();
+  const d = (document.getElementById("date_presta").value || "").trim();
+  const num = (document.getElementById("num_facture").value || "").trim();
+  const subjectInput = (document.getElementById("mail_subject").value || "").trim();
+  const subject = subjectInput || ("Facture ANFH - AU BIEN FICELÉ - " + num + (d ? (" - " + d) : ""));
+
+  const body = document.getElementById("apercu").textContent;
+
+  // Gmail web compose endpoint (works consistently on Android Chrome)
+  const href = "https://mail.google.com/mail/?view=cm&fs=1"
+    + "&to=" + encodeURIComponent(to)
+    + "&su=" + encodeURIComponent(subject)
+    + "&body=" + encodeURIComponent(body);
+
+  b.href = href;
+}
+
+function refreshAll() {
+  updateNumero();
+  const { needReplace, ex } = buildApercu();
+  updateVerif(needReplace, ex);
+  // If confirmation required, enable depends on checkbox
+  if (ex && needReplace) {
+    setEnabled(document.getElementById("chk_confirm").checked);
+  }
+  updateGmailLink();
+}
+
+// Events
+["to","mail_subject","date_presta","nb_pers","pu_ttc","tva","client_nom","client_adresse","desc","num_facture","date_edition"].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener("input", refreshAll);
+  el.addEventListener("change", refreshAll);
+});
+document.getElementById("chk_confirm").addEventListener("change", refreshAll);
+
+// Init
+refreshAll();
+</script>
+</body>
+</html>
