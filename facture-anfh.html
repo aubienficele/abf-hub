@@ -315,10 +315,10 @@ function updateGmailLink() {
   const body = document.getElementById("apercu").textContent;
 
   // Gmail web compose endpoint (works consistently on Android Chrome)
-  const href = "https://mail.google.com/mail/?view=cm&fs=1"
-    + "&to=" + encodeURIComponent(to)
-    + "&su=" + encodeURIComponent(subject)
-    + "&body=" + encodeURIComponent(body);
+  const href = "mailto:" + encodeURIComponent(to)
+  + "?subject=" + encodeURIComponent(subject)
+  + "&body=" + encodeURIComponent(body);
+
 
   b.href = href;
 }
